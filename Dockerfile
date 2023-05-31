@@ -1,5 +1,5 @@
-FROM golang:1.16.3-alpine AS build
-WORKDIR $GOPATH/src/github.com/micromata/dave/
+FROM golang:1.20.4-alpine3.18 AS build
+WORKDIR $GOPATH/src/github.com/jskeates/dave/
 COPY . .
 RUN go build -o /go/bin/dave cmd/dave/main.go
 RUN go build -o /go/bin/davecli cmd/davecli/main.go
