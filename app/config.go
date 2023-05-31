@@ -3,24 +3,26 @@ package app
 import (
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
+
 	"github.com/fsnotify/fsnotify"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"os"
-	"path/filepath"
 )
 
 // Config represents the configuration of the server application.
 type Config struct {
-	Address string
-	Port    string
-	Prefix  string
-	Dir     string
-	TLS     *TLS
-	Log     Logging
-	Realm   string
-	Users   map[string]*UserInfo
-	Cors    Cors
+	Address        string
+	Port           string
+	Prefix         string
+	Dir            string
+	TLS            *TLS
+	Log            Logging
+	Realm          string
+	Users          map[string]*UserInfo
+	Cors           Cors
+	AutoCreateDirs bool
 }
 
 // Logging allows definition for logging each CRUD method.
@@ -107,6 +109,7 @@ func setDefaults() {
 	viper.SetDefault("Log.Update", false)
 	viper.SetDefault("Log.Delete", false)
 	viper.SetDefault("Cors.Credentials", false)
+	viper.SetDefault("AutoCreateDirs", false)
 }
 
 // AuthenticationNeeded returns whether users are defined and authentication is required

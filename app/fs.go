@@ -2,12 +2,13 @@ package app
 
 import (
 	"context"
-	log "github.com/sirupsen/logrus"
-	"golang.org/x/net/webdav"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
+	"golang.org/x/net/webdav"
 )
 
 // This file is an extension of golang.org/x/net/webdav/file.go.
@@ -78,6 +79,21 @@ func (d Dir) OpenFile(ctx context.Context, name string, flag int, perm os.FileMo
 	if name = d.resolve(ctx, name); name == "" {
 		return nil, os.ErrNotExist
 	}
+
+	if flag != 0 {
+		// We are creating a file
+		if d.Config.AutoCreateDirs {
+			dir := path.Dir(name)
+			log.WithFields(log.Fields{
+				"dir": dir,
+			}).Info("Creating directory")
+			err := os.MkdirAll(dir, 0755)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	f, err := os.OpenFile(name, flag, perm)
 	if err != nil {
 		return nil, err
